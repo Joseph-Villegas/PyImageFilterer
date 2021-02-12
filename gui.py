@@ -1,3 +1,4 @@
+import os
 import sys
 from filters import *
 from PIL import Image
@@ -55,8 +56,10 @@ class PyImageFilterer(QMainWindow):
 	def open(self):
 		options = QFileDialog.Options()
 
-		self.fileName, _ = QFileDialog.getOpenFileName(self, 'Select an Image to Filter', '', 'Images (*.png *.jpeg *.jpg *.bmp *.gif)', options=options)
+		self.fileName, _ = QFileDialog.getOpenFileName(self, 'Select an Image to Filter', os.getenv('HOME'), 'Images (*.png *.jpeg *.jpg *.bmp *.gif)', options=options)
 		if self.fileName:
+			self.base_image = Image.open(self.fileName)
+			self.filtered_image = self.base_image.copy()
 			image = QImage(self.fileName)
 			if image.isNull():
 				QMessageBox.information(self, "Image Viewer", "Cannot load %s." % self.fileName)
@@ -139,10 +142,10 @@ class PyImageFilterer(QMainWindow):
 		self.aboutAct = QAction("&About", self, triggered=self.about)
 		self.aboutQtAct = QAction("About &Qt", self, triggered=qApp.aboutQt)
 
-		self.invertAct = QAction("&Invert", self, enabled=False, triggered=lambda: self.filterHandler("invert"))
-		self.maskAct = QAction("&Mask", self, enabled=False, triggered=lambda: self.filterHandler("mask"))
-		self.grayscaleAct = QAction("&Grayscale", self, enabled=False, triggered=lambda: self.filterHandler("grayscale"))
-		self.swapChannelsAct = QAction("Swap &Channels", self, enabled=False, triggered=lambda: self.filterHandler("swap channels"))
+		self.invertAct = QAction("&Invert", self, enabled=False, triggered=lambda: self.filter("invert"))
+		self.maskAct = QAction("&Mask", self, enabled=False, triggered=lambda: self.filter("mask"))
+		self.grayscaleAct = QAction("&Grayscale", self, enabled=False, triggered=lambda: self.filter("grayscale"))
+		self.swapChannelsAct = QAction("Swap &Channels", self, enabled=False, triggered=lambda: self.filter("swap channels"))
 
 	def createMenus(self):
 		self.fileMenu = QMenu("&File", self)
@@ -192,19 +195,16 @@ class PyImageFilterer(QMainWindow):
 	def adjustScrollBar(self, scrollBar, factor):
 		scrollBar.setValue(int(factor * scrollBar.value() + ((factor - 1) * scrollBar.pageStep() / 2)))
 
-	def filterHandler(self, filter):
-		print(f"Filter Selected: {filter}")
+	def filter(self, filter):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
-		image = Image.open(self.fileName)
-		self.filter = filter
 		if filter == "invert":
-			self.filtered_image = invert(image)
+			self.filtered_image = invert(self.base_image)
 		elif filter == "grayscale":
-			self.filtered_image = grayscale(image)
+			self.filtered_image = grayscale(self.base_image)
 		elif filter == "swap channels":
-			self.filtered_image = swap_channels(image)
+			self.filtered_image = swap_channels(self.base_image)
 		elif filter == "mask":
-			self.filtered_image = mask(image)
+			self.filtered_image = mask(self.base_image)
 
 		pixmap = pil2pixmap(self.filtered_image)
 		self.imageLabel.setPixmap(pixmap)
@@ -212,12 +212,13 @@ class PyImageFilterer(QMainWindow):
 		print("DONE")
 
 	def save(self):
-		image_path = self.fileName
+		options = QFileDialog.Options()
+		filename, _ = QFileDialog.getSaveFileName(self, "Save Filtered Image", os.getenv('HOME'), "PNG (*.png);;JPG (*.jpg);;", options=options)
 
-		image_type = image_path.split('/')[-1].split('.')[-1]
-		image_title = image_path.split('/')[-1].split('.')[-2]
+		if (not filename):
+			return
 
-		self.filtered_image.save(f"{image_title}-{self.filter}_filter.{image_type}")
+		self.filtered_image.save(filename)
 
 
 def main():
