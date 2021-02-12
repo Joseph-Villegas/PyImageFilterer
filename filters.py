@@ -13,3 +13,8 @@ def swap_channels(image):
 	filtered_image = image.copy()
 	filtered_image.putdata([(pixel[2], pixel[0], pixel[1]) for pixel in image.getdata()])
 	return filtered_image
+
+def mask(image):
+	filtered_image = image.copy()
+	filtered_image.putdata([(0,)*3 if sum(pixel) / 3.0 < 128 else (255,)*3 for pixel in image.getdata()])
+	return filtered_image
