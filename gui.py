@@ -201,7 +201,7 @@ class PyImageFilterer(QMainWindow):
 			self.filtered_image = invert(self.base_image)
 		elif filter == "grayscale":
 			self.filtered_image = grayscale(self.base_image)
-		elif filter == "swap channels":https://github.com/Joseph-Villegas/PyImageFilterer_V1
+		elif filter == "swap channels":
 			self.filtered_image = swap_channels(self.base_image)
 		elif filter == "mask":
 			self.filtered_image = mask(self.base_image)
@@ -209,7 +209,6 @@ class PyImageFilterer(QMainWindow):
 		pixmap = pil2pixmap(self.filtered_image)
 		self.imageLabel.setPixmap(pixmap)
 		QApplication.restoreOverrideCursor()
-		print("DONE")
 
 	def save(self):
 		options = QFileDialog.Options()
