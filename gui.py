@@ -127,7 +127,7 @@ class PyImageFilterer(QMainWindow):
 								"zooming and scaling features.</p>"
 								"<p>In addition the example shows how to use QPainter to "
 								"print an image and Pillow to filter an image .</p>"
-								"<a class='link' href='https://github.com/WilliamSampson44444/cst205_weather_project'>View source on GitHub</a>")
+								"<a class='link' href='https://github.com/Joseph-Villegas/PyImageFilterer_V1'>View source on GitHub</a>")
 
 	def createActions(self):
 		self.openAct = QAction("&Open...", self, shortcut="Ctrl+O", triggered=self.open)
@@ -201,7 +201,7 @@ class PyImageFilterer(QMainWindow):
 			self.filtered_image = invert(self.base_image)
 		elif filter == "grayscale":
 			self.filtered_image = grayscale(self.base_image)
-		elif filter == "swap channels":
+		elif filter == "swap channels":https://github.com/Joseph-Villegas/PyImageFilterer_V1
 			self.filtered_image = swap_channels(self.base_image)
 		elif filter == "mask":
 			self.filtered_image = mask(self.base_image)
