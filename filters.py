@@ -1,5 +1,7 @@
 from PIL import Image
 
+# NOTE: the 'image' parameter is a PIL image objects in all methods
+
 def invert(image):
 	filtered_image = image.copy()
 	# filtered_image.putdata(list(tuple(map(lambda pixel: (255 - pixel[0], 255 - pixel[1], 255 - pixel[2]), image.getdata()))))
