@@ -8,3 +8,8 @@ def invert(image):
 
 def grayscale(image):     
 	return image.convert("L")
+
+def swap_channels(image):
+	filtered_image = image.copy()
+	filtered_image.putdata([(pixel[2], pixel[0], pixel[1]) for pixel in image.getdata()])
+	return filtered_image
