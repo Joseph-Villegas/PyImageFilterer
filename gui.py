@@ -55,7 +55,6 @@ class PyImageFilterer(QMainWindow):
 
 	def open(self):
 		options = QFileDialog.Options()
-
 		self.fileName, _ = QFileDialog.getOpenFileName(self, 'Select an Image to Filter', os.getenv('HOME'), 'Images (*.png *.jpeg *.jpg *.bmp *.gif)', options=options)
 		if self.fileName:
 			self.base_image = Image.open(self.fileName)
@@ -197,6 +196,7 @@ class PyImageFilterer(QMainWindow):
 
 	def filter(self, filter):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
+
 		if filter == "invert":
 			self.filtered_image = invert(self.base_image)
 		elif filter == "grayscale":
@@ -214,10 +214,8 @@ class PyImageFilterer(QMainWindow):
 		options = QFileDialog.Options()
 		filename, _ = QFileDialog.getSaveFileName(self, "Save Filtered Image", os.getenv('HOME'), "PNG (*.png);;JPG (*.jpg);;", options=options)
 
-		if (not filename):
-			return
-
-		self.filtered_image.save(filename)
+		if filename:
+			self.filtered_image.save(filename)
 
 
 def main():
