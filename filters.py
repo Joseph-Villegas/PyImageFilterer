@@ -52,3 +52,18 @@ def contrast(image):
 	filtered_image = image.copy()
 	filtered_image.putdata([tuple(map(lambda value: bound(int(value / 2) if value < 128 else value * 2), pixel)) for pixel in image.getdata()])
 	return filtered_image
+
+def flip(image):
+	""" Applies flip filter to a PIL image object """
+	filtered_image = image.copy()
+	width, height = filtered_image.size
+	[filtered_image.putpixel((x, y), image.getpixel((x, height - y - 1))) for x in range(width) for y in range(height)]
+	return filtered_image
+
+
+def mirror(image):
+	""" Applies mirror filter to a PIL image object """
+	filtered_image = image.copy()
+	width, height = filtered_image.size
+	[filtered_image.putpixel((x,y), image.getpixel((width - x -1, y))) for x in range(int(width / 1)) for y in range(height)]
+	return filtered_image
