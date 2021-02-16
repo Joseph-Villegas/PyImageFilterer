@@ -60,7 +60,6 @@ def flip(image):
 	[filtered_image.putpixel((x, y), image.getpixel((x, height - y - 1))) for x in range(width) for y in range(height)]
 	return filtered_image
 
-
 def mirror(image):
 	""" Applies mirror filter to a PIL image object """
 	filtered_image = image.copy()

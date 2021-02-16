@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QImage, QPixmap, QPalette, QPainter, QIcon
 from PyQt5.QtPrintSupport import QPrintDialog, QPrinter
 from PyQt5.QtWidgets import QLabel, QSizePolicy, QScrollArea, QMessageBox, QMainWindow, QMenu, QAction, \
-    qApp, QFileDialog, QApplication
+    qApp, QFileDialog, QApplication, QStyle
 
 def pil2pixmap(image):
 	""" Converts pillow image object to pixmap for use in PyQt5 GUI """
@@ -28,6 +28,7 @@ def pil2pixmap(image):
 
 
 class PyImageFilterer(QMainWindow):
+	""" GUI for Image Manipulation """
 	def __init__(self):
 		super().__init__()
 
@@ -54,6 +55,7 @@ class PyImageFilterer(QMainWindow):
 		self.resize(800, 600)
 
 	def open(self):
+		""" Selects and displays an image from a user's personal files """
 		options = QFileDialog.Options()
 		self.fileName, _ = QFileDialog.getOpenFileName(self, 'Select an Image to Filter', os.getenv('HOME'), 'Images (*.png *.jpeg *.jpg *.bmp *.gif)', options=options)
 		if self.fileName:
@@ -76,6 +78,10 @@ class PyImageFilterer(QMainWindow):
 			self.maskAct.setEnabled(True)
 			self.grayscaleAct.setEnabled(True)
 			self.swapChannelsAct.setEnabled(True)
+			self.sepiaAct.setEnabled(True)
+			self.contrastAct.setEnabled(True)
+			self.flipAct.setEnabled(True)
+			self.mirrorAct.setEnabled(True)
 
 			self.updateZoomActions()
 
@@ -83,6 +89,7 @@ class PyImageFilterer(QMainWindow):
 				self.imageLabel.adjustSize()
 
 	def print_(self):
+		""" Prints image as displayed """
 		dialog = QPrintDialog(self.printer, self)
 		if dialog.exec_():
 			painter = QPainter(self.printer)
@@ -112,39 +119,35 @@ class PyImageFilterer(QMainWindow):
 		self.updateZoomActions()
 
 	def about(self):
-		QMessageBox.about(self, "About PyImage Filter",
-								"<p>The <b>PyImage Filter</b> shows how to combine "
-								"QLabel and QScrollArea to display an image. QLabel is "
-								"typically used for displaying text, but it can also display "
-								"an image. QScrollArea provides a scrolling view around "
-								"another widget. If the child widget exceeds the size of the "
-								"frame, QScrollArea automatically provides scroll bars.</p>"
-								"<p>The example demonstrates how QLabel's ability to scale "
-								"its contents (QLabel.scaledContents), and QScrollArea's "
-								"ability to automatically resize its contents "
-								"(QScrollArea.widgetResizable), can be used to implement "
-								"zooming and scaling features.</p>"
-								"<p>In addition the example shows how to use QPainter to "
-								"print an image and Pillow to filter an image .</p>"
-								"<a class='link' href='https://github.com/Joseph-Villegas/PyImageFilterer_V1'>View source on GitHub</a>")
+		QMessageBox.about(self, "About PyImage Filterer",
+								"<p>The <b>PyImage Filterer</b> GUI was developed in the Python programming language using the PyQt5 module for widget creation "
+								"and PIL for image manipulation. "
+								"A user may select an image from their personal files and apply any one of the available filters to their image. "
+								"An image can be saved as a PNG or JPG in the user's desired folder destination or be printed. "
+								"Developed by Joseph Villegas, student at CSUMB.</p>"
+								"<a class='link' href='https://github.com/Joseph-Villegas/PyImageFilterer_V1'>View source code on GitHub</a>")
 
 	def createActions(self):
-		self.openAct = QAction("&Open...", self, shortcut="Ctrl+O", triggered=self.open)
+		self.openAct = QAction(self.style().standardIcon(QStyle.SP_DialogOpenButton), "&Open...", self, shortcut="Ctrl+O", triggered=self.open)
 		self.printAct = QAction("&Print...", self, shortcut="Ctrl+P", enabled=False, triggered=self.print_)
-		self.saveAct = QAction("&Save...", self, enabled=False, triggered=self.save)
-		self.exitAct = QAction("&Exit", self, shortcut="Ctrl+Q", triggered=self.close)
+		self.saveAct = QAction(self.style().standardIcon(QStyle.SP_DialogSaveButton), "&Save...", self, enabled=False, triggered=self.save)
+		self.exitAct = QAction(self.style().standardIcon(QStyle.SP_DialogCancelButton),"&Exit", self, shortcut="Ctrl+Q", triggered=self.close)
 
 		self.zoomInAct = QAction("Zoom &In (25%)", self, shortcut="Ctrl++", enabled=False, triggered=self.zoomIn)
 		self.zoomOutAct = QAction("Zoom &Out (25%)", self, shortcut="Ctrl+-", enabled=False, triggered=self.zoomOut)
 		self.normalSizeAct = QAction("&Normal Size", self, shortcut="Ctrl+S", enabled=False, triggered=self.normalSize)
 		self.fitToWindowAct = QAction("&Fit to Window", self, enabled=False, checkable=True, shortcut="Ctrl+F", triggered=self.fitToWindow)
-		self.aboutAct = QAction("&About", self, triggered=self.about)
-		self.aboutQtAct = QAction("About &Qt", self, triggered=qApp.aboutQt)
+		self.aboutAct = QAction(self.style().standardIcon(QStyle.SP_FileDialogInfoView), "&About", self, triggered=self.about)
+		self.aboutQtAct = QAction(self.style().standardIcon(QStyle.SP_FileDialogInfoView), "About &Qt", self, triggered=qApp.aboutQt)
 
 		self.invertAct = QAction("&Invert", self, enabled=False, triggered=lambda: self.filter("invert"))
 		self.maskAct = QAction("&Mask", self, enabled=False, triggered=lambda: self.filter("mask"))
 		self.grayscaleAct = QAction("&Grayscale", self, enabled=False, triggered=lambda: self.filter("grayscale"))
 		self.swapChannelsAct = QAction("Swap &Channels", self, enabled=False, triggered=lambda: self.filter("swap channels"))
+		self.sepiaAct = QAction("&Sepia", self, enabled=False, triggered=lambda: self.filter("sepia"))
+		self.contrastAct = QAction("&Contrast", self, enabled=False, triggered=lambda: self.filter("contrast"))
+		self.flipAct = QAction("&Flip", self, enabled=False, triggered=lambda: self.filter("flip"))
+		self.mirrorAct = QAction("&Mirror", self, enabled=False, triggered=lambda: self.filter("mirror"))
 
 	def createMenus(self):
 		self.fileMenu = QMenu("&File", self)
@@ -170,6 +173,10 @@ class PyImageFilterer(QMainWindow):
 		self.editMenu.addAction(self.maskAct)
 		self.editMenu.addAction(self.grayscaleAct)
 		self.editMenu.addAction(self.swapChannelsAct)
+		self.editMenu.addAction(self.sepiaAct)
+		self.editMenu.addAction(self.contrastAct)
+		self.editMenu.addAction(self.flipAct)
+		self.editMenu.addAction(self.mirrorAct)
 
 		self.menuBar().addMenu(self.fileMenu)
 		self.menuBar().addMenu(self.editMenu)
@@ -195,6 +202,7 @@ class PyImageFilterer(QMainWindow):
 		scrollBar.setValue(int(factor * scrollBar.value() + ((factor - 1) * scrollBar.pageStep() / 2)))
 
 	def filter(self, filter):
+		""" Applies selected filters to an image """
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 
 		if filter == "invert":
@@ -205,12 +213,21 @@ class PyImageFilterer(QMainWindow):
 			self.filtered_image = swap_channels(self.base_image)
 		elif filter == "mask":
 			self.filtered_image = mask(self.base_image)
+		elif filter == "sepia":
+			self.filtered_image = sepia(self.base_image)
+		elif filter == "contrast":
+			self.filtered_image = contrast(self.base_image)
+		elif filter == "flip":
+			self.filtered_image = flip(self.base_image)
+		elif filter == "mirror":
+			self.filtered_image = mirror(self.base_image)
 
 		pixmap = pil2pixmap(self.filtered_image)
 		self.imageLabel.setPixmap(pixmap)
 		QApplication.restoreOverrideCursor()
 
 	def save(self):
+		""" Saves PNG/JPG file at user's desired destination """
 		options = QFileDialog.Options()
 		filename, _ = QFileDialog.getSaveFileName(self, "Save Filtered Image", os.getenv('HOME'), "PNG (*.png);;JPG (*.jpg);;", options=options)
 
