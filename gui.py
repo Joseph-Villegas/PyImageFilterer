@@ -131,7 +131,7 @@ class PyImageFilterer(QMainWindow):
 								"A user may select an image from their personal files and apply any one of the available filters to their image. "
 								"An image can be saved as a PNG or JPG in the user's desired directory destination or be printed. "
 								"Developed by Joseph Villegas, student at CSUMB.</p>"
-								"<a class='link' href='https://github.com/Joseph-Villegas/PyImageFilterer_V1'>View source code on GitHub</a>")
+								"<a class='link' href='https://github.com/Joseph-Villegas/PyImageFilterer'>View source code on GitHub</a>")
 
 	def createActions(self):
 		self.openAct = QAction(self.style().standardIcon(QStyle.SP_DialogOpenButton), "&Open...", self, shortcut="Ctrl+O", triggered=self.open)
