@@ -236,11 +236,13 @@ class PyImageFilterer(QMainWindow):
 		""" Saves PNG/JPG file at user's desired destination """
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		filename, _ = QFileDialog.getSaveFileName(self, "Save Filtered Image", '', "PNG (*.png);;JPG (*.jpg)", options=options)
-
+		filename, extension = QFileDialog.getSaveFileName(self, "Save Filtered Image", '', 'JPG (*.jpg);;PNG (*.png)', options=options)
+		
 		if filename:
-			self.filtered_image.save(filename)
-
+			if 'PNG' in extension:
+				self.filtered_image.save(f'{filename}.png')
+			elif 'JPG' in extension:
+				self.filtered_image.save(f'{filename}.jpg')
 
 def main():
 	app = QApplication(sys.argv)
