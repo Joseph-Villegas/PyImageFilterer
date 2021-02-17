@@ -57,7 +57,8 @@ class PyImageFilterer(QMainWindow):
 	def open(self):
 		""" Selects and displays an image from a user's personal files """
 		options = QFileDialog.Options()
-		self.fileName, _ = QFileDialog.getOpenFileName(self, 'Select an Image to Filter', os.getenv('HOME'), 'Images (*.png *.jpeg *.jpg *.bmp *.gif)', options=options)
+		options |= QFileDialog.DontUseNativeDialog
+		self.fileName, _ = QFileDialog.getOpenFileName(self, 'Select an Image to Filter', '', 'Images (*.png *.jpeg *.jpg *.bmp *.gif)', options=options)
 		if self.fileName:
 			self.base_image = Image.open(self.fileName)
 			self.filtered_image = self.base_image.copy()
@@ -123,7 +124,7 @@ class PyImageFilterer(QMainWindow):
 								"<p>The <b>PyImage Filterer</b> GUI was developed in the Python programming language using the PyQt5 module for widget creation "
 								"and PIL for image manipulation. "
 								"A user may select an image from their personal files and apply any one of the available filters to their image. "
-								"An image can be saved as a PNG or JPG in the user's desired folder destination or be printed. "
+								"An image can be saved as a PNG or JPG in the user's desired directory destination or be printed. "
 								"Developed by Joseph Villegas, student at CSUMB.</p>"
 								"<a class='link' href='https://github.com/Joseph-Villegas/PyImageFilterer_V1'>View source code on GitHub</a>")
 
@@ -229,7 +230,8 @@ class PyImageFilterer(QMainWindow):
 	def save(self):
 		""" Saves PNG/JPG file at user's desired destination """
 		options = QFileDialog.Options()
-		filename, _ = QFileDialog.getSaveFileName(self, "Save Filtered Image", os.getenv('HOME'), "PNG (*.png);;JPG (*.jpg);;", options=options)
+		options |= QFileDialog.DontUseNativeDialog
+		filename, _ = QFileDialog.getSaveFileName(self, "Save Filtered Image", '', "PNG (*.png);;JPG (*.jpg)", options=options)
 
 		if filename:
 			self.filtered_image.save(filename)
