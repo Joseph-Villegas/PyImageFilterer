@@ -26,6 +26,11 @@ def pil2pixmap(image):
 	pixmap = QPixmap.fromImage(qim)
 	return pixmap
 
+def resource_path(relative_path):
+	""" Translate asset paths to useable format for PyInstaller """
+	if hasattr(sys, '_MEIPASS'):
+		return os.path.join(sys._MEIPASS, relative_path)
+	return os.path.join(os.path.abspath('.'), relative_path)
 
 class PyImageFilterer(QMainWindow):
 	""" GUI for Image Manipulation """
@@ -50,7 +55,7 @@ class PyImageFilterer(QMainWindow):
 		self.createActions()
 		self.createMenus()
 
-		self.setWindowIcon(QIcon("icon.jpg"))
+		self.setWindowIcon(QIcon(resource_path('./assets/icon.png')))
 		self.setWindowTitle("PyImage Filterer")
 		self.resize(800, 600)
 
